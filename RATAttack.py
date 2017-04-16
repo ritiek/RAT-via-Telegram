@@ -15,11 +15,11 @@ import pyHook, pythoncom
 me = singleton.SingleInstance()
 
 # REPLACE '1234:abcd' BY THE TOKEN OF THE BOT YOU GENERATED!
-token = '354259191:AAHgDeXwxXSBphdcoQ7_ME33zOMHZeEbbkM'
+token = '1234:abcd'
 
 def checkchat_id(chat_id):
 	# REPLACE '123456' WITH YOUR ACTUAL chat_id!
-	known_ids = ['329187815']
+	known_ids = ['123456']
 	# COMMENT THE LINE 'return True'!
 	#return True
 	try:

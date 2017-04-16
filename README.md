@@ -71,13 +71,13 @@ You can copy the above to update your command list via `BotFather` so you don't 
 ### How To Compile:
 
 - Go to `C:\Python27\Scripts\` or wherever you installed python.
-- Run `pyinstaller --onefile --noconsole C:\path\to\RATAttack.py`. You can also pass `--icon=<path\to\icon.ico`> to use any custom icon.
+- Run `pyinstaller --onefile --noconsole C:\path\to\RATAttack.py`. You can also pass `--icon=<path\to\icon.ico>` to use any custom icon.
 - Once it is compiled successfully, find the `.exe` file in `C:\Python27\Scripts\dist\`. You can change the name of the `.exe` to anything you wish.
 - **BEWARE!** If you run the compiled `.exe`, the script will hide itself and infect your PC to run at startup. You can return to normal by using the `/self_destruct` option or manually removing `C:\Windows\Portal\` directory and `C:\Users\Username\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\portal.lnk`.
 
 ### Modifying Settings:
 
-- You can also modify the name of hidden `.exe` file and location and name of the folder where the hidden '.exe' will hide itself. To do this; modify `hide_folder` and `compiled_name` respectively.
+- You can also modify the name of hidden `.exe` file and location and name of the folder where the hidden `.exe` will hide itself. To do this; modify `hide_folder` and `compiled_name` respectively.
 
 ## Notes:
 

